@@ -1,0 +1,114 @@
+from aiogram import Router, F
+from aiogram.filters import Command, CommandStart
+from aiogram.types import Message
+from aiogram import types
+from create_bot import database
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import CallbackQuery
+from create_bot import database,scheduler,bot,panel
+
+
+
+main_menu_router = Router()
+
+#main_menu---------------------------------------
+
+@main_menu_router.callback_query(F.data == 'main_menu')
+async def main_menu(callback: types.CallbackQuery):
+    builder = InlineKeyboardBuilder()
+
+    user = database.get_user(callback.from_user.id)
+    slot = database.get_slot(user[2])
+
+    text = '''
+✔️ Наш VPN один из самых быстрых и безопасных!
+✔️ Используется VPN протокол, который устойчив к любым блокировкам!
+✔️ Поддерживается бесперебойная работа и высокая скорость соединения!
+
+💰 Тарифы для 3 устройств:
+└ 200 рублей на 1 мес
+└ 500 рублей на 3 мес
+└ 900 рублей на 6 мес
+
+    '''
+
+
+    if slot != None:
+        builder.row(types.InlineKeyboardButton(
+            text='Моя подписка 🥸',
+            callback_data='user_slot_info'
+        ))
+        text += '\n👉 Для подключения VPN, нажми на кнопку "Моя подписка 🥸" и следуй инструкциям.'
+    else:
+        builder.row(types.InlineKeyboardButton(
+            text='Подключить VPN 💎',
+            callback_data='shop_plan'
+        ))
+        text += '\n👉 Для получения доступа к VPN, нажми на кнопку "Подключить VPN 💎" выбери тариф и следуй инструкциям.'
+    
+    builder.row(types.InlineKeyboardButton(
+        text='Баланс 💰',
+        callback_data='balance'
+    ))
+
+    builder.row(types.InlineKeyboardButton(
+        text='Помощь ❓',
+        callback_data='gaide'
+    ))
+
+
+    await callback.message.edit_text(text=text, reply_markup=builder.as_markup())
+    await callback.answer()
+
+@main_menu_router.message(CommandStart())
+@main_menu_router.message(Command('main_menu'))
+async def main_menu(message: Message):
+    builder = InlineKeyboardBuilder()
+
+    user = database.get_user(message.from_user.id)
+    slot = database.get_slot(user[2])
+
+    text = '''
+✔️ Наш VPN один из самых быстрых и безопасных!
+✔️ Используется VPN протокол, который устойчив к любым блокировкам!
+✔️ Поддерживается бесперебойная работа и высокая скорость соединения!
+
+💰 Тарифы для 3 устройств:
+└ 200 рублей на 1 мес
+└ 500 рублей на 3 мес
+└ 900 рублей на 6 мес
+
+    '''
+
+
+    if slot != None:
+        builder.row(types.InlineKeyboardButton(
+            text='Моя подписка 🥸',
+            callback_data='user_slot_info'
+        ))
+        text += '\n👉 Для подключения VPN, нажми на кнопку "Моя подписка 🥸" и следуй инструкциям.'
+    else:
+        builder.row(types.InlineKeyboardButton(
+            text='Подключить VPN 💎',
+            callback_data='shop_plan'
+        ))
+        text += '\n👉 Для получения доступа к VPN, нажми на кнопку "Подключить VPN 💎" выбери тариф и следуй инструкциям.'
+    
+    builder.row(types.InlineKeyboardButton(
+        text='Баланс 💰',
+        callback_data='balance'
+    ))
+
+    builder.row(types.InlineKeyboardButton(
+        text='Помощь ❓',
+        callback_data='gaide'
+    ))
+
+    await message.answer(text=text, reply_markup=builder.as_markup())
+
+#main_menu---------------------------------------
+
+@main_menu_router.callback_query(F.data=='del_message')
+async def del_message(callback: CallbackQuery):
+    await callback.message.delete()
+    await callback.answer()
