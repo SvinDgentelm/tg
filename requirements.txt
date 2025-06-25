@@ -3,3 +3,5 @@ aiogram
 APScheduler
 python-decouple
 requests
+sqlalchemy
+decouple
