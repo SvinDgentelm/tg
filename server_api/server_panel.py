@@ -15,16 +15,19 @@ class Panel:
     data={'username': login, 'password': password}
     ses = requests.Session()
 
-    def test_connect(self):
+    def connect(self):
         return self.ses.post(f'{self.host}/login', data=self.data)
     
 
     def get_list(self):
+
+        self.connect()
         resource = self.ses.get(f'{self.host}/panel/api/inbounds/list', json=self.data).json()
         return resource
     
     def add_client(self, user, days):
 
+        self.connect()
         epoch = datetime.datetime.utcfromtimestamp(0)
         x_time = int((datetime.datetime.now() - epoch).total_seconds() * 1000)
         x_time += 86400000 * (days + 3) - 10800000

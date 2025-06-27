@@ -13,7 +13,7 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 database = Database()
 
 panel = Panel()
-panel.test_connect()
+panel.connect()
 
 jobstores = {
     'default': SQLAlchemyJobStore(url='sqlite:///jobs.sqlite')
