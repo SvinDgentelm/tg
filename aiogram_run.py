@@ -11,7 +11,10 @@ from handlers.users.main_menu import main_menu_router
 from handlers.users.shop import shop_router
 from handlers.users.subscription import sub_router
 
-async def main():
+import uvicorn
+from server_api.link_creator import app
+
+async def run_bot():
         
     scheduler.start()
     #dp.include_router(start_router)
