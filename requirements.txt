@@ -4,3 +4,4 @@ APScheduler
 python-decouple
 requests
 sqlalchemy
+fastapi

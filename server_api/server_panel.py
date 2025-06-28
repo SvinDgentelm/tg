@@ -9,21 +9,35 @@ from decouple import config
 class Panel:
     login=config('PANEL_LOGIN')
     password=config('PANEL_PASSWORD')
-    host='http://193.43.79.128:60345/HJZqfcu0HnGOagI'
-
+    hosts=config('HOSTS').split('||')
     header=[]
     data={'username': login, 'password': password}
     ses = requests.Session()
+    self_link=config('SELF_LINK')
 
     def connect(self):
-        return self.ses.post(f'{self.host}/login', data=self.data)
+        
+        for host in self.hosts:
+            response = self.ses.post(f'{host}/login', data=self.data)
+
+        return response
     
 
     def get_list(self):
 
         self.connect()
-        resource = self.ses.get(f'{self.host}/panel/api/inbounds/list', json=self.data).json()
+        resource = self.ses.get(f'{self.hosts[0]}/panel/api/inbounds/list', json=self.data).json()
         return resource
+    
+    def get_lists(self):
+
+        response = []
+        self.connect()
+
+        for host in self.hosts:
+            response.append((self.ses.get(f'{host}/panel/api/inbounds/list', json=self.data).json(),host.split('/')[2]))
+
+        return response
     
     def add_client(self, user, days):
 
@@ -47,11 +61,16 @@ class Panel:
                 'expiryTime': x_time,
                 'enable': True,
                 'tgId': str(user[2]),
-                'subId': ''
+                'subId': str(uuid.uuid1())
             }]
         })
         }
-        resource = self.ses.post(f'{self.host}/panel/api/inbounds/addClient', headers=header, json=data1)
+        
+    
+        
+        for host in self.hosts:
+            resource = self.ses.post(f'{host}/panel/api/inbounds/addClient', headers=header, json=data1)
+
         return resource
     
     def get_client(self, user_id):
@@ -60,6 +79,14 @@ class Panel:
 
         for client in inbound['clients']:
             if client['tgId']==str(user_id):
+                return client
+            
+    def get_client_by_subId(self, client_subId):
+        
+        inbound = json.loads(self.get_list()['obj'][0]['settings'])
+
+        for client in inbound['clients']:
+            if client['subId']==str(client_subId):
                 return client
 
     def updateClientDate(self, days, user_id):
@@ -87,8 +114,10 @@ class Panel:
             }]
         })
         }
+        
+        for host in self.hosts:
+            resource = self.ses.post(f'{host}/panel/api/inbounds/updateClient/{client['id']}', headers=header, json=data1)
 
-        resource = self.ses.post(f'{self.host}/panel/api/inbounds/updateClient/{client['id']}', headers=header, json=data1)
         return resource
     
 
@@ -99,9 +128,8 @@ class Panel:
         :return: str
         """
         client = self.get_client(user_id=user_id)
-        server = json.loads(self.get_list()['obj'][0]['streamSettings'])
 
-        val = f"vless://{client['id']}@193.43.79.128:443?type={server['network']}&security={server['security']}&pbk=-u3NJd0hO66GP31UO5MVuriBIbgBzMu7ajsXeuwFeCw&fp=chrome&sni=yahoo.com&sid=e7ec&spx=%2F&flow={client['flow']}#{client['email']}"
+        val = f"{self.self_link}/connect_link/{client['subId']}"
 
         return val
 
@@ -113,60 +141,7 @@ class Panel:
 
         header = {"Accept": "application/json"}
 
-        resource = self.ses.post(f'{self.host}/panel/api/inbounds/{server_id}/delClient/{client['id']}', headers=header)
+        for host in self.hosts:
+            resource = self.ses.post(f'{host}/panel/api/inbounds/{server_id}/delClient/{client['id']}', headers=header)
+
         return resource
-
-
-    def time_active(self, user_id: str):
-        dict_x = {}
-        epoch = datetime.datetime.utcfromtimestamp(0)
-        x_time = int((datetime.datetime.now() - epoch).total_seconds() * 1000.0)
-        y = json.loads(self.get_list()['obj'][0]['settings'])
-        for i in y["clients"]:
-            if i['tgId'] == user_id:
-                if i['enable'] and i['expiryTime'] > x_time:
-                    dict_x[i['id']] = i['expiryTime']
-                    return dict_x
-                else:
-                    dict_x[i['id']] = '0'
-                    return dict_x
-            if len(dict_x) == 0:
-                dict_x['0'] = '0'
-        
-        return dict_x
-    
-    def activ(self, user_id: str):
-        """
-        Проверка активности подписки
-        :param user_id: str
-        :return: str
-        """
-        dict_x = {}
-        epoch = datetime.datetime.utcfromtimestamp(0)
-        x_time = int((datetime.datetime.now() - epoch).total_seconds() * 1000.0)
-        y = json.loads(self.get_list()['obj'][0]['settings'])
-        for i in y["clients"]:
-            if i['tgId'] == user_id:
-                if i['enable'] and i['expiryTime'] > x_time:
-                    print(i)
-                    print(i['enable'])
-                    dict_x['activ'] = 'Активен'
-                    ts = i['expiryTime']
-                    ts /= 1000
-                    ts += 10800
-                    dict_x['time'] = datetime.datetime.utcfromtimestamp(ts).strftime('%d-%m-%Y %H:%M') + ' МСК'
-
-                else:
-                    print(i)
-                    print(i['enable'])
-                    dict_x['activ'] = 'Не Активен'
-                    ts = i['expiryTime']
-                    ts /= 1000
-                    ts += 10800
-                    dict_x['time'] = datetime.datetime.utcfromtimestamp(ts).strftime('%d-%m-%Y %H:%M') + ' МСК'
-
-            else:
-                dict_x['activ'] = 'Не зарегистрирован'
-                dict_x['time'] = '-'
-
-        return dict_x
