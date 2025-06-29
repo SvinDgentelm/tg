@@ -129,7 +129,7 @@ class Panel:
         """
         client = self.get_client(user_id=user_id)
 
-        val = f"{self.self_link}/connect_link/{client['subId']}"
+        val = f"{self.self_link}/connect_link/{client['subId']}/prestige_vpn"
 
         return val
 
