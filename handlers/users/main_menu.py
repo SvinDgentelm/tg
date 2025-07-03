@@ -52,8 +52,8 @@ async def main_menu(callback: types.CallbackQuery):
     ))
 
     builder.row(types.InlineKeyboardButton(
-        text='Помощь ❓',
-        callback_data='gaide'
+        text='Реферальная система 🎖',
+        callback_data='referral_program'
     ))
 
 
@@ -100,8 +100,8 @@ async def main_menu(message: Message):
     ))
 
     builder.row(types.InlineKeyboardButton(
-        text='Помощь ❓',
-        callback_data='gaide'
+        text='Реферальная система 🎖',
+        callback_data='referral_program'
     ))
 
     await message.answer(text=text, reply_markup=builder.as_markup())

@@ -66,6 +66,12 @@ class Database:
         self.cursor.execute('SELECT * FROM Users WHERE user_id = ?', (user_id,))
         user = self.cursor.fetchone()
 
+        if user == None:
+            self.add_user(user_id=user_id, username=username)
+
+        self.cursor.execute('SELECT * FROM Users WHERE user_id = ?', (user_id,))
+        user = self.cursor.fetchone()
+
         return user
     
 
