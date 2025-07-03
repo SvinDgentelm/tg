@@ -5,3 +5,4 @@ python-decouple
 requests
 sqlalchemy
 fastapi
+uvicorn
