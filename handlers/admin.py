@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup, CallbackQuery
 from aiogram import types
 from aiogram.fsm.state import State, StatesGroup
@@ -394,6 +394,15 @@ async def servers(callback: CallbackQuery):
 
 
     ##--------ADDING SERVERS------------
+
+@admin_router.message(Command('add_balance'))
+async def add_balance(message: Message, command: CommandObject):
+    
+    args = command.args
+    database.raise_user_balance(user_id=args.split()[0], sum=int(args.split()[1]))
+
+
+
 @admin_router.callback_query(F.data=='add_server')
 async def add_servers(callback: CallbackQuery, state: FSMContext):
     
