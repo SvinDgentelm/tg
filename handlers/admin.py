@@ -276,7 +276,7 @@ async def info_editing_plan(message:Message, state: FSMContext):
     builder = InlineKeyboardBuilder()
 
     builder.button(text='Confirm', callback_data=EditPlan(**new_plan))
-    builder.add(types.InlineKeyboardButton(text='Cancel', callback_data=f'manage_plan_{new_plan['id']}'))
+    builder.add(types.InlineKeyboardButton(text='Cancel', callback_data=f"manage_plan_{new_plan['id']}"))
 
 
     await message.answer(f'''
@@ -561,7 +561,7 @@ async def info_editing_server(message:Message, state: FSMContext):
     builder = InlineKeyboardBuilder()
 
     builder.button(text='Confirm', callback_data=EditServer(**new_server))
-    builder.add(types.InlineKeyboardButton(text='Cancel', callback_data=f'manage_server_{new_server['id']}'))
+    builder.add(types.InlineKeyboardButton(text='Cancel', callback_data=f"manage_server_{new_server['id']}"))
 
 
     await message.answer(f'''

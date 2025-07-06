@@ -7,7 +7,7 @@ from server_api.link_creator import app
 
 
 async def start_api():
-    config = uvicorn.Config(app, host="217.60.39.40", port=8000, log_level="info", loop="asyncio")
+    config = uvicorn.Config(app, host="127.0.0.1", port=8000, log_level="info", loop="asyncio")
     server = uvicorn.Server(config)
     await server.serve()
 

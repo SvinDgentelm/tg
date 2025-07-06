@@ -116,7 +116,7 @@ class Panel:
         }
         
         for host in self.hosts:
-            resource = self.ses.post(f'{host}/panel/api/inbounds/updateClient/{client['id']}', headers=header, json=data1)
+            resource = self.ses.post(f"{host}/panel/api/inbounds/updateClient/{client['id']}", headers=header, json=data1)
 
         return resource
     
@@ -142,6 +142,6 @@ class Panel:
         header = {"Accept": "application/json"}
 
         for host in self.hosts:
-            resource = self.ses.post(f'{host}/panel/api/inbounds/{server_id}/delClient/{client['id']}', headers=header)
+            resource = self.ses.post(f"{host}/panel/api/inbounds/{server_id}/delClient/{client['id']}", headers=header)
 
         return resource
