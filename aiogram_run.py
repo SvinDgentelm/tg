@@ -10,6 +10,7 @@ from handlers.users.connect_sub import con_sub_router
 from handlers.users.main_menu import main_menu_router
 from handlers.users.shop import shop_router
 from handlers.users.subscription import sub_router
+from handlers.users.referral import ref_router
 
 import uvicorn
 from server_api.link_creator import app
@@ -25,10 +26,7 @@ async def run_bot():
     dp.include_router(main_menu_router)
     dp.include_router(shop_router)
     dp.include_router(sub_router)
+    dp.include_router(ref_router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
-
-
-if __name__ == '__main__':
-    asyncio.run(main())

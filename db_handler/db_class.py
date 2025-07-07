@@ -14,7 +14,9 @@ class Database:
             username TEXT NOT NULL,
             user_id INTEGER NOT NULL,
             is_admin INTEGER NOT NULL,
-            balance REAL NOT NULL)
+            balance REAL NOT NULL,
+            self_ref_link TEXT NOT NULL,
+            ref_link TEXT)
         ''')
 
 
@@ -76,7 +78,11 @@ class Database:
     
 
     def add_user(self, username, user_id):
-        self.cursor.execute('INSERT INTO Users (username, user_id, is_admin, balance) VALUES (?,?,?,?)', (username, user_id, 0, 0))
+
+        self_ref_link = [random.choice('abcdefghijklmnopqrstvwxyzABCDEFGHIJKLMNOPQRSTVWXYZ0123456789') for i in range(15)]
+        self_ref_link = ''.join(self_ref_link)
+        
+        self.cursor.execute('INSERT INTO Users (username, user_id, is_admin, balance, self_ref_link) VALUES (?,?,?,?,?)', (username, user_id, 0, 0, self_ref_link))
         self.connection.commit()
 
     def update_user_balance(self, user_id, balance):

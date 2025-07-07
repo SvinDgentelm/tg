@@ -5,3 +5,6 @@ tgvpn/
 *.pyc
 /__pycache__
 __pycache__/create_bot.cpython-311.pyc
+.env
+database.db
+jobs.sqlite

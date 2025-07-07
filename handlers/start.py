@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart, Command,CommandObject
 from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup
 from aiogram import types
 from create_bot import admins, database
@@ -8,7 +8,13 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 start_router = Router()
 
 @start_router.message(CommandStart())
-async def cmd_start(message: Message):
+async def cmd_start(message: Message, command: CommandObject):
+
+    args = command.args
+
+    if args:
+        print(args)
+
     user = database.get_or_create(message.from_user.id, message.from_user.first_name)
     if user:
         await message.answer(f'Hello, {user[1]}')

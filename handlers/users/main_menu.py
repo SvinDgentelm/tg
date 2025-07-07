@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command, CommandStart, CommandObject
 from aiogram.types import Message
 from aiogram import types
 from create_bot import database
@@ -52,7 +52,7 @@ async def main_menu(callback: types.CallbackQuery):
     ))
 
     builder.row(types.InlineKeyboardButton(
-        text='Реферальная система 🎖',
+        text='Поделиться 🎖',
         callback_data='referral_program'
     ))
 
@@ -62,8 +62,12 @@ async def main_menu(callback: types.CallbackQuery):
 
 @main_menu_router.message(CommandStart())
 @main_menu_router.message(Command('main_menu'))
-async def main_menu(message: Message):
+async def main_menu(message: Message, command: CommandObject):
     builder = InlineKeyboardBuilder()
+    
+    if command.command == 'start':
+        if command.args:
+            print(command.args)
 
     user = database.get_user(message.from_user.id)
     slot = database.get_slot(user[2])
@@ -100,7 +104,7 @@ async def main_menu(message: Message):
     ))
 
     builder.row(types.InlineKeyboardButton(
-        text='Реферальная система 🎖',
+        text='Поделиться 🎖',
         callback_data='referral_program'
     ))
 

@@ -9,6 +9,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from filters.is_admin import isAdminFilter
 from aiogram.enums import ParseMode
 from aiogram.filters.callback_data import CallbackData
+from create_bot import bot
 
 admin_router = Router()
 admin_router.message.filter(isAdminFilter())
@@ -399,7 +400,16 @@ async def servers(callback: CallbackQuery):
 async def add_balance(message: Message, command: CommandObject):
     
     args = command.args
-    database.raise_user_balance(user_id=args.split()[0], sum=int(args.split()[1]))
+
+    user_id=args.split()[0]
+    sum=int(args.split()[1])
+
+    database.raise_user_balance(user_id=user_id, sum=sum)
+
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+    await bot.send_message(chat_id=user_id, text=f"Ваш баланс пополнен на {sum} руб", reply_markup=builder.as_markup())
 
 
 

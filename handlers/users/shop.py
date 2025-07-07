@@ -22,8 +22,8 @@ async def shop(callback: CallbackQuery):
         text = 'Вы уже оформили подписку!'
     else:
 
-        builder.row(types.InlineKeyboardButton(text='1 мес за 250 руб', callback_data='shop_chosen_1'))
-        builder.row(types.InlineKeyboardButton(text='3 мес за 600 руб', callback_data='shop_chosen_2'))
+        builder.row(types.InlineKeyboardButton(text='1 мес за 200 руб', callback_data='shop_chosen_1'))
+        builder.row(types.InlineKeyboardButton(text='3 мес за 500 руб', callback_data='shop_chosen_2'))
         builder.row(types.InlineKeyboardButton(text='6 мес за 900 руб', callback_data='shop_chosen_3'))
 
         text = 'Выберите план подписки'
