@@ -67,7 +67,19 @@ async def main_menu(message: Message, command: CommandObject):
     
     if command.command == 'start':
         if command.args:
-            print(command.args)
+            
+            user_id = message.from_user.id
+            user = database.get_user(user_id=user_id)
+            ref_link = command.args
+
+            if not user[6]:
+
+                OK = InlineKeyboardBuilder()
+                OK.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+                database.add_ref_link(user_id=user_id, ref_link=ref_link)
+                await bot.send_message(chat_id=user_id, text='<b>Реферальная ссылка активна!</b>\n\nПополните баланс чтобы получить награду',
+                                        reply_markup=OK.as_markup())
 
     user = database.get_user(message.from_user.id)
     slot = database.get_slot(user[2])

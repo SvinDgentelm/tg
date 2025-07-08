@@ -85,6 +85,21 @@ class Database:
         self.cursor.execute('INSERT INTO Users (username, user_id, is_admin, balance, self_ref_link) VALUES (?,?,?,?,?)', (username, user_id, 0, 0, self_ref_link))
         self.connection.commit()
 
+    def add_ref_link(self, user_id, ref_link):
+
+        self.cursor.execute('UPDATE Users SET ref_link=? WHERE user_id=?',(ref_link, user_id, ))
+        self.connection.commit()
+    
+    def paid_ref(self, user_id):
+
+        self.cursor.execute('UPDATE Users SET ref_link=? WHERE user_id=?', ('done', user_id,))
+        self.connection.commit()
+
+    def get_by_ref(self, ref_link):
+
+        self.cursor.execute('SELECT * FROM Users WHERE self_ref_link=?', (ref_link,))
+        return self.cursor.fetchone()
+
     def update_user_balance(self, user_id, balance):
         self.cursor.execute('UPDATE Users SET balance=? WHERE user_id=?', (balance,user_id,))
         self.connection.commit()

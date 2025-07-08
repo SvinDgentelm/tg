@@ -141,6 +141,28 @@ async def check_invoices():
             builder.row(types.InlineKeyboardButton(text='OK', callback_data='balance'))
 
             await bot.send_message(user_id, text='Счёт оплачен, <b>средства зачилены на баланс</b>🟢', reply_markup=builder.as_markup())
+
+            user = database.get_user(user_id=user_id)
+
+            if user[6] != None and user[6] != 'done':
+                
+                sum = database.tariff_by_id(id=1)[1]
+
+                database.raise_user_balance(user_id=user_id, sum=sum)
+
+                user_friend = database.get_by_ref(ref_link=user[6])
+                database.raise_user_balance(user_id=user_friend[2], sum=sum)
+
+                database.paid_ref(user_id=user_id)
+
+                OK = InlineKeyboardBuilder()
+                OK.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+                await bot.send_message(chat_id=user_id, text=f'Вам начислен бонус {sum} руб за реферальную систему!',
+                                    reply_markup=OK.as_markup())
+                
+                await bot.send_message(chat_id=user_friend[2], text=f'Вам начислен бонус {sum} руб за реферальную систему!',
+                        reply_markup=OK.as_markup())
         
         elif invoice_status == 'expired':
 

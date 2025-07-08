@@ -48,7 +48,7 @@ async def choose_topup(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()  
 
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_200'))
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_2'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 600 руб 💴', callback_data='topup_600'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 900 руб 💶', callback_data='topup_900'))
 
@@ -195,6 +195,28 @@ async def successful_payment(message: Message):
     text=f'🎉 Оплата прошла усешно! \n\n💰 <b>{amount} руб</b> зачислены на баланс \n\n💳 id транзакции: \n <code>{id}</code>'
 
     await message.answer(text=text, reply_markup=builder.as_markup())
+
+    if user[6] != None and user[6] != 'done':
+        
+        sum = database.tariff_by_id(id=1)[1]
+
+        database.raise_user_balance(user_id=message.from_user.id, sum=sum)
+
+        user_friend = database.get_by_ref(ref_link=user[6])
+        database.raise_user_balance(user_id=user_friend[2], sum=sum)
+
+        database.paid_ref(user_id=message.from_user.id)
+
+        OK = InlineKeyboardBuilder()
+        OK.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+        await bot.send_message(chat_id=message.from_user.id, text=f'Вам начислен бонус {sum} руб за реферальную систему!',
+                               reply_markup=OK.as_markup())
+        
+        await bot.send_message(chat_id=user_friend[2], text=f'Вам начислен бонус {sum} руб за реферальную систему!',
+                               reply_markup=OK.as_markup())
+
+
 
 
 
