@@ -178,7 +178,7 @@ async def aprv_change_plan(callback: CallbackQuery):
     builder.add(types.InlineKeyboardButton(text='Да🟢', callback_data=f'plan_changed_{new_plan_id}'))
     builder.add(types.InlineKeyboardButton(text='Нет🔴', callback_data='user_slot_info'))
     
-    text = f'❓ Изменить тариф на <b>{new_plan[0]}</b> за <i>{new_plan[1]} руб</i> ❓'
+    text = f'❓ Изменить тариф на {new_plan[3]} ❓'
 
     await callback.message.edit_text(text=text, reply_markup=builder.as_markup())
     await callback.answer()

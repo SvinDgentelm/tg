@@ -48,7 +48,7 @@ async def choose_topup(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()  
 
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_2'))
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_200'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 600 руб 💴', callback_data='topup_600'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 900 руб 💶', callback_data='topup_900'))
 
