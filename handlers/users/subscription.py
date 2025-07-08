@@ -96,6 +96,7 @@ async def unsub_slot(callback: CallbackQuery):
 
     await callback.message.edit_text(f'😔<b>Подписка приостановлена</b>\n\nVPN будет доступен до даты следующей оплаты\n\n🗓<b>{next_payment_date}</b>\n\n😵‍💫 <b>После даты следующей оплаты подписка будет полностью остановлена</b>',
                                      reply_markup=builder.as_markup())
+    await callback.answer()
     
 
 @sub_router.callback_query(F.data.startswith('aprove_resub_slot_'))
