@@ -55,6 +55,10 @@ async def main_menu(callback: types.CallbackQuery):
         text='Поделиться 🎖',
         callback_data='referral_program'
     ))
+    builder.row(types.InlineKeyboardButton(
+        text='Поддержка ⁉️',
+        url='https://t.me/prestige_sup'
+    ))
 
 
     await callback.message.edit_text(text=text, reply_markup=builder.as_markup())
@@ -118,6 +122,10 @@ async def main_menu(message: Message, command: CommandObject):
     builder.row(types.InlineKeyboardButton(
         text='Поделиться 🎖',
         callback_data='referral_program'
+    ))
+    builder.row(types.InlineKeyboardButton(
+        text='Поддержка ⁉️',
+        url='https://t.me/prestige_sup'
     ))
 
     await message.answer(text=text, reply_markup=builder.as_markup())
