@@ -49,7 +49,7 @@ async def choose_topup(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()  
 
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_60'))
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_200'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 600 руб 💴', callback_data='topup_600'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 900 руб 💶', callback_data='topup_900'))
 
@@ -89,10 +89,10 @@ async def cancel_by_stars(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()
 
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_200'))
-    builder.row(types.InlineKeyboardButton(text=f'Оплатить звездами телеграмм {int(amount)//2}⭐️', callback_data=f'pay_by_stars_{amount}'))
-    builder.row(types.InlineKeyboardButton(text=f'Оплатить крпитовалютой {int(amount)} руб', callback_data=f'pay_by_crypto_{amount}'))
-
+    builder.row(types.InlineKeyboardButton(text=f'💳 Оплатить картой {int(amount)} руб', callback_data=f'pay_by_card_{amount}'))
+    builder.row(types.InlineKeyboardButton(text=f'⭐️ Оплатить звездами телеграмм {int(amount)//2}', callback_data=f'pay_by_stars_{amount}'))
+    builder.row(types.InlineKeyboardButton(text=f'🤖 Оплатить крпитовалютой {int(amount)} руб', callback_data=f'pay_by_crypto_{amount}'))
+    
     builder.row(types.InlineKeyboardButton(
         text='Назад 🔙',
         callback_data='topup'
