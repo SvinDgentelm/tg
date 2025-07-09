@@ -1,3 +1,4 @@
+import json
 from aiogram import Router, F
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message, CallbackQuery
@@ -48,7 +49,7 @@ async def choose_topup(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()  
 
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_200'))
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_60'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 600 руб 💴', callback_data='topup_600'))
     builder.row(types.InlineKeyboardButton(text='Пополнить на 900 руб 💶', callback_data='topup_900'))
 
@@ -69,8 +70,9 @@ async def choose_payment(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()
 
-    builder.row(types.InlineKeyboardButton(text=f'Оплатить звездами телеграмм {int(amount)//2}⭐️', callback_data=f'pay_by_stars_{amount}'))
-    builder.row(types.InlineKeyboardButton(text=f'Оплатить крпитовалютой {int(amount)} руб', callback_data=f'pay_by_crypto_{amount}'))
+    builder.row(types.InlineKeyboardButton(text=f'💳 Оплатить картой {int(amount)} руб', callback_data=f'pay_by_card_{amount}'))
+    builder.row(types.InlineKeyboardButton(text=f'⭐️ Оплатить звездами телеграмм {int(amount)//2}', callback_data=f'pay_by_stars_{amount}'))
+    builder.row(types.InlineKeyboardButton(text=f'🤖 Оплатить крпитовалютой {int(amount)} руб', callback_data=f'pay_by_crypto_{amount}'))
 
     builder.row(types.InlineKeyboardButton(
         text='Назад 🔙',
@@ -87,6 +89,7 @@ async def cancel_by_stars(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()
 
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_200'))
     builder.row(types.InlineKeyboardButton(text=f'Оплатить звездами телеграмм {int(amount)//2}⭐️', callback_data=f'pay_by_stars_{amount}'))
     builder.row(types.InlineKeyboardButton(text=f'Оплатить крпитовалютой {int(amount)} руб', callback_data=f'pay_by_crypto_{amount}'))
 
@@ -115,10 +118,53 @@ async def pay_by_stars(callback: CallbackQuery):
     await callback.message.answer_invoice(
         title=f'Пополнение счёта',
         prices=prices,
-        provider_token='',
         description=f'Пополнение счёта на {amount*2} руб',
-        payload=f"{amount}",
+        payload=f"stars",
         currency="XTR",
+        reply_markup=builder.as_markup()
+    )
+    await callback.answer()
+
+@balance_router.callback_query(F.data.startswith('pay_by_card_'))
+async def pay_by_stars(callback: CallbackQuery):
+
+    amount = int(callback.data.split('_')[-1])
+
+    builder = InlineKeyboardBuilder()
+
+    builder.button(text=f'Оплатить {amount}', pay=True)
+    builder.button(text=f'Отменить', callback_data=f'cancel_by_stars_{amount}')
+
+    builder.adjust(1)
+
+    prices = [types.LabeledPrice(label="Raise balance", amount=amount*100)]
+
+    provider_data = {
+        "receipt": {
+        "items": [
+            {
+            "description": "Пополнение баланса",
+            "quantity": "1.00",
+            "amount": {
+                "value": f"{amount}",
+                "currency": "RUB"
+            },
+            "vat_code": 1
+            }
+        ]
+        }
+    }
+    
+    await callback.message.answer_invoice(
+        title=f'Пополнение счёта',
+        provider_token=config('YKASSA_TOKEN'),
+        prices=prices,
+        description=f'Пополнение счёта на {amount} руб',
+        payload=f"ykassa",
+        currency="RUB",
+        need_phone_number=True,
+        send_phone_number_to_provider=True,
+        provider_data=json.dumps(provider_data),
         reply_markup=builder.as_markup()
     )
     await callback.answer()
@@ -184,8 +230,11 @@ async def on_pre_checkout_query(
 async def successful_payment(message: Message):
 
     user = database.get_user(message.from_user.id)
-    amount = int(message.successful_payment.invoice_payload) * 2
+    amount = int(message.successful_payment.total_amount) / 100
     id = message.successful_payment.telegram_payment_charge_id
+
+    if message.successful_payment.invoice_payload == 'stars':
+        amount *= 2
 
     database.update_user_balance(user_id=user[2], balance=int(user[4]) + amount)
 
