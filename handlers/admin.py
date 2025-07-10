@@ -411,6 +411,20 @@ async def add_balance(message: Message, command: CommandObject):
 
     await bot.send_message(chat_id=user_id, text=f"Ваш баланс пополнен на {sum} руб", reply_markup=builder.as_markup())
 
+@admin_router.message(Command('add_balance_byname'))
+async def add_balance(message: Message, command: CommandObject):
+    
+    args = command.args
+
+    username=args.split()[0]
+    sum=int(args.split()[1])
+
+    user_id = database.raise_by_username(username=username, sum=sum)
+
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+    await bot.send_message(chat_id=user_id, text=f"Ваш баланс пополнен на {sum} руб", reply_markup=builder.as_markup())
 
 
 @admin_router.callback_query(F.data=='add_server')

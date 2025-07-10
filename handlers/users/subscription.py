@@ -148,9 +148,9 @@ async def change_plan(callback: CallbackQuery):
     builder = InlineKeyboardBuilder()
 
     plans = {
-        '1': ('1 мес', 200),
-        '2': ('3 мес', 500),
-        '3': ('6 мес', 900)
+        '1': ('1 мес', 150),
+        '2': ('3 мес', 400),
+        '3': ('6 мес', 750)
     }
     
     plan = plans[str(slot[3])]

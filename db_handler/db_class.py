@@ -111,6 +111,18 @@ class Database:
         self.cursor.execute('UPDATE Users SET balance=? WHERE user_id=?', (new_user_balance,user_id,))
         self.connection.commit()
 
+    def raise_by_username(self, username, sum):
+        self.cursor.execute('SELECT * FROM Users WHERE username=?', (username,))
+        user=self.cursor.fetchone()
+
+        new_user_balance = int(user[4]) + sum
+        user_id = user[2]
+
+        self.cursor.execute('UPDATE Users SET balance=? WHERE user_id=?', (new_user_balance,user_id,))
+        self.connection.commit()
+
+        return user_id
+
     def get_all_slots(self, user_id):
         self.cursor.execute('SELECT * FROM User_slot WHERE owner=?', (user_id,))
         return self.cursor.fetchall()

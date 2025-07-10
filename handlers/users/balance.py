@@ -49,9 +49,9 @@ async def choose_topup(callback: CallbackQuery):
 
     builder = InlineKeyboardBuilder()  
 
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 200 руб 💵', callback_data='topup_200'))
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 600 руб 💴', callback_data='topup_600'))
-    builder.row(types.InlineKeyboardButton(text='Пополнить на 900 руб 💶', callback_data='topup_900'))
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 150 руб 💵', callback_data='topup_150'))
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 400 руб 💴', callback_data='topup_400'))
+    builder.row(types.InlineKeyboardButton(text='Пополнить на 750 руб 💶', callback_data='topup_750'))
 
     builder.row(types.InlineKeyboardButton(
         text='Назад 🔙',
@@ -71,7 +71,7 @@ async def choose_payment(callback: CallbackQuery):
     builder = InlineKeyboardBuilder()
 
     builder.row(types.InlineKeyboardButton(text=f'💳 Оплатить картой {int(amount)} руб', callback_data=f'pay_by_card_{amount}'))
-    builder.row(types.InlineKeyboardButton(text=f'⭐️ Оплатить звездами телеграмм {int(amount)//2}', callback_data=f'pay_by_stars_{amount}'))
+    builder.row(types.InlineKeyboardButton(text=f'⭐️ Оплатить звездами телеграмм {int(amount)}', callback_data=f'pay_by_stars_{amount}'))
     builder.row(types.InlineKeyboardButton(text=f'🤖 Оплатить крпитовалютой {int(amount)} руб', callback_data=f'pay_by_crypto_{amount}'))
 
     builder.row(types.InlineKeyboardButton(
@@ -90,7 +90,7 @@ async def cancel_by_stars(callback: CallbackQuery):
     builder = InlineKeyboardBuilder()
 
     builder.row(types.InlineKeyboardButton(text=f'💳 Оплатить картой {int(amount)} руб', callback_data=f'pay_by_card_{amount}'))
-    builder.row(types.InlineKeyboardButton(text=f'⭐️ Оплатить звездами телеграмм {int(amount)//2}', callback_data=f'pay_by_stars_{amount}'))
+    builder.row(types.InlineKeyboardButton(text=f'⭐️ Оплатить звездами телеграмм {int(amount)}', callback_data=f'pay_by_stars_{amount}'))
     builder.row(types.InlineKeyboardButton(text=f'🤖 Оплатить крпитовалютой {int(amount)} руб', callback_data=f'pay_by_crypto_{amount}'))
     
     builder.row(types.InlineKeyboardButton(
@@ -233,8 +233,8 @@ async def successful_payment(message: Message):
     amount = int(message.successful_payment.total_amount) / 100
     id = message.successful_payment.telegram_payment_charge_id
 
-    if message.successful_payment.invoice_payload == 'stars':
-        amount *= 2
+#    if message.successful_payment.invoice_payload == 'stars':
+#        amount *= 2
 
     database.update_user_balance(user_id=user[2], balance=int(user[4]) + amount)
 

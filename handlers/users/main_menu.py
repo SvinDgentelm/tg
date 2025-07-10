@@ -26,9 +26,9 @@ async def main_menu(callback: types.CallbackQuery):
 ✔️ Поддерживается бесперебойная работа и высокая скорость соединения!
 
 💰 Тарифы для 3 устройств:
-└ 200 рублей на 1 мес
-└ 500 рублей на 3 мес
-└ 900 рублей на 6 мес
+└ 150 рублей на 1 мес
+└ 400 рублей на 3 мес
+└ 750 рублей на 6 мес
 
     '''
 
@@ -94,9 +94,9 @@ async def main_menu(message: Message, command: CommandObject):
 ✔️ Поддерживается бесперебойная работа и высокая скорость соединения!
 
 💰 Тарифы для 3 устройств:
-└ 200 рублей на 1 мес
-└ 500 рублей на 3 мес
-└ 900 рублей на 6 мес
+└ 150 рублей на 1 мес
+└ 400 рублей на 3 мес
+└ 750 рублей на 6 мес
 
     '''
 
@@ -136,3 +136,7 @@ async def main_menu(message: Message, command: CommandObject):
 async def del_message(callback: CallbackQuery):
     await callback.message.delete()
     await callback.answer()
+
+@main_menu_router.message(Command('id'))
+async def get_id(message: Message):
+    await message.answer(text=f'{message.from_user.id}')
