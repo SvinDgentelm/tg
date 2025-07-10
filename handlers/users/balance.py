@@ -104,12 +104,12 @@ async def cancel_by_stars(callback: CallbackQuery):
 @balance_router.callback_query(F.data.startswith('pay_by_stars_'))
 async def pay_by_stars(callback: CallbackQuery):
 
-    amount = int(callback.data.split('_')[-1]) // 2
+    amount = int(callback.data.split('_')[-1])
 
     builder = InlineKeyboardBuilder()
 
     builder.button(text=f'Оплатить {amount} XTR', pay=True)
-    builder.button(text=f'Отменить', callback_data=f'cancel_by_stars_{amount*2}')
+    builder.button(text=f'Отменить', callback_data=f'cancel_by_stars_{amount}')
 
     builder.adjust(1)
 
@@ -118,7 +118,7 @@ async def pay_by_stars(callback: CallbackQuery):
     await callback.message.answer_invoice(
         title=f'Пополнение счёта',
         prices=prices,
-        description=f'Пополнение счёта на {amount*2} руб',
+        description=f'Пополнение счёта на {amount} руб',
         payload=f"stars",
         currency="XTR",
         reply_markup=builder.as_markup()
