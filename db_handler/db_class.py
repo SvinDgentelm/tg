@@ -64,6 +64,11 @@ class Database:
 
         return user
     
+    def get_admin(self):
+        self.cursor.execute('SELECT * FROM Users WHERE is_admin=?', (1,))
+
+        return self.cursor.fetchone()
+    
     def get_or_create(self, user_id, username):
         self.cursor.execute('SELECT * FROM Users WHERE user_id = ?', (user_id,))
         user = self.cursor.fetchone()

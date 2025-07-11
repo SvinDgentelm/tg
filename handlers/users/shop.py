@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from aiogram import types
-from create_bot import database, panel
+from create_bot import database, panel, bot
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from datetime import datetime, timedelta
 from handlers.scheduler_func import add_slot_action
@@ -114,6 +114,9 @@ async def succes_payment(callback: CallbackQuery):
         callback_data='user_slot_info'
     ))
     builder.row(types.InlineKeyboardButton(text='Отмена', callback_data='main_menu'))
+
+    admin = database.get_admin()
+    await bot.send_message(chat_id=admin[2], text='new user!')
 
     await callback.message.edit_text(text="Спасибо за покупку", reply_markup=builder.as_markup())
     await callback.answer()
