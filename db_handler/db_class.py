@@ -64,6 +64,11 @@ class Database:
 
         return user
     
+    def get_admin(self):
+        self.cursor.execute('SELECT * FROM Users WHERE is_admin=?', (1,))
+
+        return self.cursor.fetchone()
+    
     def get_or_create(self, user_id, username):
         self.cursor.execute('SELECT * FROM Users WHERE user_id = ?', (user_id,))
         user = self.cursor.fetchone()
@@ -125,6 +130,10 @@ class Database:
 
     def get_all_slots(self, user_id):
         self.cursor.execute('SELECT * FROM User_slot WHERE owner=?', (user_id,))
+        return self.cursor.fetchall()
+    
+    def get_slots(self,):
+        self.cursor.execute('SELECT owner FROM User_slot', ())
         return self.cursor.fetchall()
 
 
