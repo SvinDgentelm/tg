@@ -18,7 +18,10 @@ class Panel:
     def connect(self):
         
         for host in self.hosts:
-            response = self.ses.post(f'{host}/login', data=self.data)
+            try:
+                response = self.ses.post(f'{host}/login', data=self.data)
+            except:
+                print(f'ERROR CONNECTION TO {host}')
 
         return response
     
@@ -35,7 +38,10 @@ class Panel:
         self.connect()
 
         for host in self.hosts:
-            response.append((self.ses.get(f'{host}/panel/api/inbounds/list', json=self.data).json(),host.split('/')[2]))
+            try:
+                response.append((self.ses.get(f'{host}/panel/api/inbounds/list', json=self.data).json(),host.split('/')[2]))
+            except:
+                print(f"ERROR GET LISTS OF {host}")
 
         return response
     

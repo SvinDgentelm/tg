@@ -131,6 +131,10 @@ class Database:
     def get_all_slots(self, user_id):
         self.cursor.execute('SELECT * FROM User_slot WHERE owner=?', (user_id,))
         return self.cursor.fetchall()
+    
+    def get_slots(self,):
+        self.cursor.execute('SELECT owner FROM User_slot', ())
+        return self.cursor.fetchall()
 
 
 #----------Servers--------------------
