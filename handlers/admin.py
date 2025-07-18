@@ -555,13 +555,13 @@ async def delete_server(callback: CallbackQuery):
 
         ###----------EDITING SERVER--------------
 
-@admin_router.callback_query(Command('send_message'))
-async def send_message(command: CommandObject, state:FSMContext):
+@admin_router.message(Command('send_message'))
+async def send_admin_message(message:Message, state:FSMContext):
 
     await state.set_state(SendMessageForm.waiting_for_input)
 
-@admin_router.callback_query(SendMessageForm.waiting_for_input)
-async def get_send_message(message: Message, state: FSMContext):
+@admin_router.message(SendMessageForm.waiting_for_input)
+async def get_send_admin_message(message: Message, state: FSMContext):
     text = message.text
 
     OK = InlineKeyboardBuilder()
@@ -570,8 +570,8 @@ async def get_send_message(message: Message, state: FSMContext):
     users = database.get_slots()
 
     for user in users:
-        await bot.send_message(text=text, reply_markup=OK.as_markup())
-
+        await bot.send_message(text=text, reply_markup=OK.as_markup(), chat_id=user[0])
+    await state.clear()
 
 @admin_router.callback_query(F.data.startswith('edit_server_'))
 async def edit_server(callback:CallbackQuery, state: FSMContext):
