@@ -75,8 +75,9 @@ class Panel:
     
         
         for host in self.hosts:
+            server_id = self.ses.get(f'{self.hosts[0]}/panel/api/inbounds/list', json=self.data).json()['obj'][0]['id']
+            data1['id'] = server_id
             resource = self.ses.post(f'{host}/panel/api/inbounds/addClient', headers=header, json=data1)
-
         return resource
     
     def get_client(self, user_id):
