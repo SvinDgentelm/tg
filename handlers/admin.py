@@ -11,6 +11,9 @@ from aiogram.enums import ParseMode
 from aiogram.filters.callback_data import CallbackData
 from create_bot import bot
 
+from yookassa import Configuration, Payment
+import uuid
+
 admin_router = Router()
 admin_router.message.filter(isAdminFilter())
 admin_router.callback_query.filter(isAdminFilter())
@@ -649,3 +652,28 @@ async def editing_server(callback: CallbackQuery, callback_data: EditServer):
     ##---------------------------------------
 
     ##--------PLANS TO SERVERS---------------
+
+@admin_router.message(Command('test_payment'))
+async def test_payment(message: Message):
+
+    Configuration.account_id = '1100776'
+    Configuration.secret_key = 'live_11wKOaAr0nWcX4w5fnfArphp7raUM0IN6qnUZQC9XDM'
+
+    payment = Payment.create({
+        "amount": {
+            "value": "10.00",
+            "currency": "RUB"
+        },
+        "confirmation": {
+            "type": "redirect",
+            "return_url": "https://www.example.com/return_url"
+        },
+        "capture": True,
+        "description": "Пополнение баланса"
+    }, uuid.uuid4())
+
+    try:
+        print(message.from_user)
+        await message.answer(text=f'{payment['confirmation']['confirmation_url']}')
+    except:
+        await message.answer(text='error')

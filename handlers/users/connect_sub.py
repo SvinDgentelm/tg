@@ -54,7 +54,6 @@ async def connect_ios(callback: CallbackQuery):
     text=f'1️⃣ Установите любое приложение по кнопкам ниже (или используйте любой другой Xray клиент)\n\n2️⃣ Скопируйте ключ подключения ниже в сообщении\n\n3️⃣ В приложении нажмите на *"+"* и выберите *"вставить"* или *"Добавить из буфера"*'
     text += f'\n\n4️⃣*VPN Настроен и к готов работе* \n\n*КЛЮЧ ПОДКЛЮЧЕНИЯ:* \n\n`{link}`'
 
-    builder.row(types.InlineKeyboardButton(text='Установить Streisand ♥️', url='https://apps.apple.com/us/app/streisand/id6450534064'))
     builder.row(types.InlineKeyboardButton(text='Установить v2RayTun ♠️', url='https://apps.apple.com/ru/app/v2raytun/id6476628951'))
     builder.row(types.InlineKeyboardButton(text='Установить V2Box ♦️', url='https://apps.apple.com/ru/app/v2box-v2ray-client/id6446814690'))
 
