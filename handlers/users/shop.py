@@ -104,7 +104,13 @@ async def succes_payment(callback: CallbackQuery):
     cur_date = datetime.today()
     next_payment = cur_date + timedelta(days=days)
 
-    slot = database.add_slot(user_id=user[2], plan=plan[0], key=key, next_payment=next_payment)
+    plan_id = plan[0]
+
+    if plan[4] != None:
+        plan_id = plan[4]
+
+
+    slot = database.add_slot(user_id=user[2], plan=plan_id, key=key, next_payment=next_payment)
     add_slot_action(date=next_payment, slot_id=slot)
 
     builder = InlineKeyboardBuilder()
