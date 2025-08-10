@@ -19,6 +19,7 @@ async def main_menu(callback: types.CallbackQuery):
 
     user = database.get_user(callback.from_user.id)
     slot = database.get_slot(user[2])
+    connect = panel.get_client(user_id=callback.from_user.id)
 
     text = '''
 ✔️ Наш VPN один из самых быстрых и безопасных!
@@ -32,6 +33,11 @@ async def main_menu(callback: types.CallbackQuery):
 
     '''
 
+    if connect == None:
+        builder.row(types.InlineKeyboardButton(
+            text='Пробная подписка 🎁',
+            callback_data='free_plan'
+        ))
 
     if slot != None:
         builder.row(types.InlineKeyboardButton(
@@ -87,6 +93,7 @@ async def main_menu(message: Message, command: CommandObject):
 
     user = database.get_user(message.from_user.id)
     slot = database.get_slot(user[2])
+    connect = panel.get_client(user_id=message.from_user.id)
 
     text = '''
 ✔️ Наш VPN один из самых быстрых и безопасных!
@@ -99,7 +106,11 @@ async def main_menu(message: Message, command: CommandObject):
 └ 750 рублей на 6 мес
 
     '''
-
+    if connect == None:
+        builder.row(types.InlineKeyboardButton(
+            text='Пробная подписка 🎁',
+            callback_data='free_plan'
+        ))
 
     if slot != None:
         builder.row(types.InlineKeyboardButton(
