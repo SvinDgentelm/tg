@@ -23,3 +23,5 @@ async def main_free_plan(callback: CallbackQuery):
         text='Назад 🔙',
         callback_data='main_menu'
     ))
+    await callback.message.edit_text(text=text, reply_markup=builder.as_markup(), parse_mode='Markdown')
+    await callback.answer()

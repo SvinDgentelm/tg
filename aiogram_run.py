@@ -11,6 +11,7 @@ from handlers.users.main_menu import main_menu_router
 from handlers.users.shop import shop_router
 from handlers.users.subscription import sub_router
 from handlers.users.referral import ref_router
+from handlers.users.free_plan import free_plan
 
 import uvicorn
 from server_api.link_creator import app
@@ -21,6 +22,7 @@ async def run_bot():
     #dp.include_router(start_router)
     dp.include_router(admin_router)
 
+    dp.include_router(free_plan)
     dp.include_router(balance_router)
     dp.include_router(con_sub_router)
     dp.include_router(main_menu_router)
