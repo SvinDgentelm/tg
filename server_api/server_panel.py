@@ -109,7 +109,6 @@ class Panel:
         "settings": json.dumps({
             "clients": [{
                 'id': str(client['id']),
-                'alterId': str(client['alterId']),
                 'email': str(client['email']),
                 'limitIp': client['limitIp'],
                 'totalGB': client['totalGB'],
@@ -123,6 +122,8 @@ class Panel:
         }
         
         for host in self.hosts:
+            server_id = self.ses.get(f'{host}/panel/api/inbounds/list', json=self.data).json()['obj'][0]['id']
+            data1['id'] = server_id
             resource = self.ses.post(f"{host}/panel/api/inbounds/updateClient/{client['id']}", headers=header, json=data1)
 
         return resource

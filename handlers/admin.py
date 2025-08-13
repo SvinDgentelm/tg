@@ -9,7 +9,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from filters.is_admin import isAdminFilter
 from aiogram.enums import ParseMode
 from aiogram.filters.callback_data import CallbackData
-from create_bot import bot
+from create_bot import bot, panel
 
 from yookassa import Configuration, Payment
 import uuid
@@ -22,6 +22,53 @@ admin_router.callback_query.filter(isAdminFilter())
 
 
 #----------ADMIN BOARD--------------------------------
+
+from datetime import datetime, timedelta
+from create_bot import scheduler
+from handlers.scheduler_func import slot_action
+
+@admin_router.message(Command('repaid'))
+async def repaid(message: Message, command: Command):
+
+    builder = InlineKeyboardBuilder()
+
+    builder.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+    args = command.args
+
+    slot_id=args.split()[0]
+    slot = database.get_slot_byid(slot_id)
+
+    user = database.get_user(slot[1])
+
+    slot_status = slot[2]
+
+    plan = database.tariff_by_id(str(slot[3]))
+
+    price = plan[1]
+    days = plan[2]
+
+    database.paid_slot(slot_id=slot_id)
+
+    next_payment = datetime.strptime(slot[5], "%Y-%m-%d %H:%M:%S.%f") + timedelta(days=days)
+
+    database.update_slot_payment(slot_id=slot_id, next_payment=next_payment)
+    database.update_user_balance(user_id=slot[1], balance=int(user[4]) - price)
+
+    scheduler.add_job(
+        slot_action,
+        trigger='date',
+        run_date=next_payment,
+        args=[slot_id],
+        misfire_grace_time=None,
+        id=f'{next_payment}_{slot_id}',
+    )
+
+    panel.updateClientDate(days=days, user_id=user[2])
+    
+    await bot.send_message(user[2], f'Подписка была успешно продлена\nВаш баланс:  <b>{int(user[4]) - price}</b>\nДата следующего продления:  <b>{next_payment.strftime("%d.%m.%Y")}</b>',
+                            reply_markup=builder.as_markup())
+
 
 @admin_router.message(Command('board'))
 async def admin_board(message: Message):
@@ -677,3 +724,19 @@ async def test_payment(message: Message):
         await message.answer(text=f'{payment['confirmation']['confirmation_url']}')
     except:
         await message.answer(text='error')
+
+
+@admin_router.message(Command('add_days'))
+async def add_days(message: Message, command: CommandObject):
+    
+    args = command.args
+
+    user_id=args.split()[0]
+    days=int(args.split()[1])
+
+    print(panel.updateClientDate(days=days, user_id=user_id))
+
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+    
+    await message.answer('ok', reply_markup=builder.as_markup())
