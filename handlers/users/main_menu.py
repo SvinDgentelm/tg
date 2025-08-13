@@ -82,7 +82,7 @@ async def main_menu(message: Message, command: CommandObject):
             user = database.get_user(user_id=user_id)
             ref_link = command.args
 
-            if not user[6]:
+            if not user[6] and ref_link != user[6]:
 
                 OK = InlineKeyboardBuilder()
                 OK.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
