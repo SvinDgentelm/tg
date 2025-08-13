@@ -9,7 +9,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from filters.is_admin import isAdminFilter
 from aiogram.enums import ParseMode
 from aiogram.filters.callback_data import CallbackData
-from create_bot import bot
+from create_bot import bot, panel
 
 from yookassa import Configuration, Payment
 import uuid
@@ -677,3 +677,18 @@ async def test_payment(message: Message):
         await message.answer(text=f'{payment['confirmation']['confirmation_url']}')
     except:
         await message.answer(text='error')
+
+@admin_router.message(Command('add_days'))
+async def add_days(message: Message, command: CommandObject):
+    
+    args = command.args
+
+    user_id=args.split()[0]
+    days=int(args.split()[1])
+
+    panel.updateClientDate(days=days, user_id=user_id)
+
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+    await message.answer('ok', reply_markup=builder.as_markup())
