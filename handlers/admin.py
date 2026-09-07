@@ -725,7 +725,10 @@ async def test_payment(message: Message):
     except:
         await message.answer(text='error')
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/main
 @admin_router.message(Command('add_days'))
 async def add_days(message: Message, command: CommandObject):
     
@@ -734,9 +737,18 @@ async def add_days(message: Message, command: CommandObject):
     user_id=args.split()[0]
     days=int(args.split()[1])
 
+<<<<<<< HEAD
     print(panel.updateClientDate(days=days, user_id=user_id))
 
     builder = InlineKeyboardBuilder()
     builder.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
     
     await message.answer('ok', reply_markup=builder.as_markup())
+=======
+    panel.updateClientDate(days=days, user_id=user_id)
+
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text='OK', callback_data='del_message'))
+
+    await message.answer('ok', reply_markup=builder.as_markup())
+>>>>>>> refs/remotes/origin/main
